@@ -134,6 +134,7 @@
         "slide_RXNLpF": {
           "type": "_slide",
           "name": "t:names.slide",
+          "disabled": true,
           "settings": {
             "media_type_1": "image",
             "content_direction": "column",
@@ -158,6 +159,7 @@
         },
         "slide_WKqMbL": {
           "type": "_slide",
+          "disabled": true,
           "settings": {
             "media_type_1": "image",
             "content_direction": "column",

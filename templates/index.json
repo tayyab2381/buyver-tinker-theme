@@ -41,6 +41,7 @@
       "block_order": [
         "text_hBYyX8"
       ],
+      "disabled": true,
       "name": "t:names.marquee_section",
       "settings": {
         "movement_direction": "normal",

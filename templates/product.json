@@ -900,9 +900,9 @@
         "limit_details_width": false,
         "gap": 48,
         "enable_sticky_add_to_cart": true,
-        "background_color": "{{ settings.color_palette.background }}",
-        "padding-block-start": 0,
-        "padding-block-end": 32
+       "background_color": "{{ settings.color_palette.background }}",
+        "padding-block-start": 24,
+       "padding-block-end": 32
       }
     },
     "product_trust_strip": {

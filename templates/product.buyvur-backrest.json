@@ -150,6 +150,14 @@
               },
               "blocks": {}
             },
+            "custom_liquid_bhEbWk": {
+              "type": "custom-liquid",
+              "name": "t:names.custom_liquid",
+              "settings": {
+                "custom_liquid": "<style>\n.zenkly-live-clean {\n  font-family: Arial, sans-serif;\n  margin: 10px 0;\n}\n\n.zenkly-live-row {\n  display: flex;\n  align-items: center;\n  font-size: 15px;\n  margin-bottom: 8px;\n  color: #444;\n}\n\n.zenkly-live-row span.icon {\n  margin-right: 8px;\n  font-size: 18px;\n}\n\n.zenkly-viewers {\n  color: #2a9d8f;\n  font-weight: 600;\n}\n\n.zenkly-sold {\n  color: #e63946;\n  font-weight: 600;\n}\n</style>\n\n<div class=\"zenkly-live-clean\">\n\n  <!-- Viewers -->\n  <div class=\"zenkly-live-row\">\n    <span class=\"icon\">👀</span>\n    <span>\n      <span id=\"viewer-count\" class=\"zenkly-viewers\">24</span> customers are viewing this product\n    </span>\n  </div>\n\n  <!-- Sold -->\n  <div class=\"zenkly-live-row\">\n    <span class=\"icon\">🔥</span>\n    <span>\n      <span id=\"sold-count\" class=\"zenkly-sold\">47</span> sold in last 18 hours\n    </span>\n  </div>\n\n</div>\n\n<script>\n// ===== Editable Settings =====\n\n// Viewer Range\nlet minViewers = 20;\nlet maxViewers = 35;\n\n// Sold Range\nlet minSold = 40;\nlet maxSold = 70;\n\n// ===== Viewer Update (up/down realistic) =====\nfunction updateViewers() {\n  let el = document.getElementById(\"viewer-count\");\n  let current = parseInt(el.innerText);\n\n  let change = Math.floor(Math.random() * 5) - 2; // -2 to +2\n  current += change;\n\n  if (current < minViewers) current = minViewers;\n  if (current > maxViewers) current = maxViewers;\n\n  el.innerText = current;\n}\n\n// ===== Sold Update (slow increase) =====\nfunction updateSold() {\n  let el = document.getElementById(\"sold-count\");\n  let current = parseInt(el.innerText);\n\n  let increase = Math.floor(Math.random() * 2) + 1;\n  current += increase;\n\n  if (current > maxSold) current = minSold;\n\n  el.innerText = current;\n}\n\n// ===== Intervals =====\nsetInterval(updateViewers, 4000);  // every 4 sec\nsetInterval(updateSold, 9000);     // every 9 sec\n</script>"
+              },
+              "blocks": {}
+            },
             "price_a7krng": {
               "type": "price",
               "settings": {
@@ -909,6 +917,7 @@
             "custom_liquid_kqNVYR",
             "custom_liquid_yLXmd7",
             "custom_liquid_kapX8H",
+            "custom_liquid_bhEbWk",
             "price_a7krng",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",

@@ -126,6 +126,14 @@
               },
               "blocks": {}
             },
+            "custom_liquid_kqNVYR": {
+              "type": "custom-liquid",
+              "name": "t:names.custom_liquid",
+              "settings": {
+                "custom_liquid": "<style>\n.product-rating-bar{\n    display:flex;\n    align-items:center;\n    gap:8px;\n    margin:8px 0 12px;\n    flex-wrap:wrap;\n}\n\n.product-rating-stars{\n    color:#F4B400;\n    font-size:28px;\n    line-height:1;\n    letter-spacing:2px;\n}\n\n.product-rating-text{\n    font-size:16px;\n    font-weight:600;\n    color:#444;\n    line-height:1.3;\n}\n\n.product-rating-text strong{\n    color:#222;\n}\n\n@media(max-width:768px){\n\n.product-rating-stars{\n    font-size:20px;\n}\n\n.product-rating-text{\n    font-size:15px;\n}\n\n}\n</style>\n\n<div class=\"product-rating-bar\">\n\n    <span class=\"product-rating-stars\">★★★★★</span>\n\n    <span class=\"product-rating-text\">\n        <strong>{{ product.metafields.custom.rating }}</strong>\n        |\n        <strong>{{ product.metafields.custom.review_count }}</strong>\n        Verified Reviews\n    </span>\n\n</div>"
+              },
+              "blocks": {}
+            },
             "price_a7krng": {
               "type": "price",
               "settings": {
@@ -882,6 +890,7 @@
           "block_order": [
             "text_GnyQiN",
             "reviews",
+            "custom_liquid_kqNVYR",
             "price_a7krng",
             "variant_picker_R3rGDr",
             "buy_buttons_eYQEYi",

@@ -17,18 +17,21 @@
     data-product-floating-video
     aria-label="Product video"
   >
-    {{
-      product_video
-      | video_tag:
-        poster: video_poster,
-        autoplay: true,
-        muted: true,
-        loop: true,
-        controls: false,
-        playsinline: true,
-        preload: 'metadata',
-        class: 'product-floating-video__media'
-    }}
+    <video
+      class="product-floating-video__media"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="auto"
+      {% if video_poster != blank %}
+        poster="{{ video_poster }}"
+      {% endif %}
+    >
+      {% for source in product_video.sources %}
+        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+      {% endfor %}
+    </video>
 
     <button
       class="product-floating-video__close"
@@ -46,6 +49,36 @@
       if (!floatingVideo || floatingVideo.dataset.initialized === 'true') return;
 
       floatingVideo.dataset.initialized = 'true';
+      const floatingVideoMedia = floatingVideo.querySelector('video');
+
+      if (floatingVideoMedia) {
+        // Keep autoplay reliable across browsers that require the muted property
+        // to be set in JavaScript as well as in the HTML attribute.
+        floatingVideoMedia.muted = true;
+        floatingVideoMedia.defaultMuted = true;
+        floatingVideoMedia.setAttribute('muted', '');
+        floatingVideoMedia.setAttribute('playsinline', '');
+
+        const startPlayback = () => {
+          const playRequest = floatingVideoMedia.play();
+          if (playRequest && typeof playRequest.catch === 'function') {
+            playRequest.catch(() => {
+              // Autoplay can still be deferred by a browser policy; retry when
+              // the video becomes ready or the page becomes visible again.
+            });
+          }
+        };
+
+        floatingVideoMedia.addEventListener('loadeddata', startPlayback, { once: true });
+        floatingVideoMedia.addEventListener('canplay', startPlayback, { once: true });
+        floatingVideoMedia.addEventListener('playing', () => floatingVideo.classList.add('is-playing'), { once: true });
+        document.addEventListener('visibilitychange', () => {
+          if (!document.hidden) startPlayback();
+        });
+
+        if (floatingVideoMedia.readyState >= 2) startPlayback();
+      }
+
       floatingVideo.querySelector('[data-product-floating-video-close]')?.addEventListener('click', () => {
         floatingVideo.remove();
       });

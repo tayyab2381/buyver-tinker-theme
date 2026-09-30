@@ -29,9 +29,10 @@
       product_video
       | video_tag:
         poster: video_poster,
-        controls: true,
+        autoplay: true,
         muted: true,
         loop: true,
+        controls: false,
         playsinline: true,
         preload: 'metadata',
         class: 'product-description-video__media'
@@ -42,6 +43,7 @@
 {% stylesheet %}
   .product-description-video {
     width: 100%;
+    aspect-ratio: 9 / 16;
     margin-block-start: var(--padding-lg);
     overflow: hidden;
     border-radius: 10px;
@@ -51,8 +53,7 @@
   .product-description-video__media {
     display: block;
     width: 100%;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    height: 100%;
     object-fit: cover;
   }
 {% endstylesheet %}

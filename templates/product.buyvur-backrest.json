@@ -1237,6 +1237,12 @@
         "padding_bottom": 96
       }
     },
+    "product_floating_video": {
+      "type": "product-floating-video",
+      "settings": {
+        "video": ""
+      }
+    },
     "product_list_zR9Cym": {
       "type": "product-list",
       "blocks": {
@@ -1528,6 +1534,7 @@
     "product_comfort_story",
     "product_how_to_use",
     "product_specifications",
+    "product_floating_video",
     "product_list_zR9Cym",
     "1790519571ae8b8665"
   ]

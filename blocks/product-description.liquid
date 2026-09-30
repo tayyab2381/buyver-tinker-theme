@@ -14,8 +14,6 @@
   endif
 %}
 
-{% render 'text', fallback_text: text, block: block %}
-
 {% if product_video != blank %}
   {% liquid
     assign video_poster = blank
@@ -39,6 +37,8 @@
     }}
   </div>
 {% endif %}
+
+{% render 'text', fallback_text: text, block: block %}
 
 {% stylesheet %}
   .product-description-video {

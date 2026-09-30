@@ -1,20 +1,24 @@
 {% liquid
   assign target_product_handle = 'buyvur-backrest-multi-comfort-intimacy-cushion'
+  assign product_video = product.metafields.custom.product_video.value
+  if product_video == blank
+    assign product_video = section.settings.video
+  endif
   assign video_poster = blank
 
-  if section.settings.video != blank and section.settings.video.preview_image != blank
-    assign video_poster = section.settings.video.preview_image | image_url: width: 800
+  if product_video != blank and product_video.preview_image != blank
+    assign video_poster = product_video.preview_image | image_url: width: 800
   endif
 %}
 
-{% if product.handle == target_product_handle and section.settings.video != blank %}
+{% if product.handle == target_product_handle and product_video != blank %}
   <aside
     class="product-floating-video"
     data-product-floating-video
     aria-label="Product video"
   >
     {{
-      section.settings.video
+      product_video
       | video_tag:
         poster: video_poster,
         autoplay: true,

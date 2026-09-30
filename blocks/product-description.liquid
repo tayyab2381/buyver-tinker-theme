@@ -1,14 +1,61 @@
 
 
 {% liquid
-  assign product = block.settings.product
+  assign product = closest.product | default: block.settings.product
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
     assign text = product.description
   endif
+
+  assign target_product_handle = 'buyvur-backrest-multi-comfort-intimacy-cushion'
+  assign product_video = blank
+  if product != blank and product.handle == target_product_handle
+    assign product_video = product.metafields.custom.product_video.value
+  endif
 %}
 
 {% render 'text', fallback_text: text, block: block %}
+
+{% if product_video != blank %}
+  {% liquid
+    assign video_poster = blank
+    if product_video.preview_image != blank
+      assign video_poster = product_video.preview_image | image_url: width: 1200
+    endif
+  %}
+
+  <div class="product-description-video">
+    {{
+      product_video
+      | video_tag:
+        poster: video_poster,
+        controls: true,
+        muted: true,
+        loop: true,
+        playsinline: true,
+        preload: 'metadata',
+        class: 'product-description-video__media'
+    }}
+  </div>
+{% endif %}
+
+{% stylesheet %}
+  .product-description-video {
+    width: 100%;
+    margin-block-start: var(--padding-lg);
+    overflow: hidden;
+    border-radius: 10px;
+    background: var(--color-background);
+  }
+
+  .product-description-video__media {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 16 / 9;
+    object-fit: cover;
+  }
+{% endstylesheet %}
 
 {% schema %}
 {

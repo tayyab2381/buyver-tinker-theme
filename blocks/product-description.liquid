@@ -10,7 +10,7 @@
   assign target_product_handle = 'buyvur-backrest-multi-comfort-intimacy-cushion'
   assign product_video = blank
   if product != blank and product.handle == target_product_handle
-    assign product_video = product.metafields.custom.product_video.value
+    assign product_video = product.metafields.custom.product_description_video.value
   endif
 %}
 

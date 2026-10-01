@@ -2,7 +2,7 @@
 
 {% assign specification_content = product.metafields.custom.product_specifications %}
 {% capture story_image %}
-  {% render 'product-story-image', product: product, markers: '[gallery:detail],[gallery:feature]', index: 4, fallback_image: section.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 40vw, 100vw', loading: 'eager' %}
+  {% render 'product-story-image', product: product, markers: '[gallery:detail],[gallery:feature]', index: 4, fallback_image: section.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 40vw, 100vw', loading: 'lazy' %}
 {% endcapture %}
 
 {% if section.blocks.size > 0 or section.settings.show_defaults %}

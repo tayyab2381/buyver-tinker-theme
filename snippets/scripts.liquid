@@ -111,11 +111,6 @@
 >
 <link
   rel="modulepreload"
-  href="{{ 'recently-viewed-products.js' | asset_url }}"
-  fetchpriority="low"
->
-<link
-  rel="modulepreload"
   href="{{ 'scrolling.js' | asset_url }}"
   fetchpriority="low"
 >
@@ -222,11 +217,26 @@
   type="module"
   fetchpriority="low"
 ></script>
-<script
-  src="{{ 'video-background.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
+<script type="module">
+  const loadVideoBackground = () => {
+    if (!document.querySelector('video-background-component')) return;
+    import('{{ 'video-background.js' | asset_url }}');
+  };
+
+  const scheduleVideoBackground = () => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadVideoBackground, { timeout: 2500 });
+    } else {
+      window.addEventListener('load', loadVideoBackground, { once: true });
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleVideoBackground, { once: true });
+  } else {
+    scheduleVideoBackground();
+  }
+</script>
 <script
   src="{{ 'component-quantity-selector.js' | asset_url }}"
   type="module"
@@ -242,21 +252,33 @@
   type="module"
   fetchpriority="low"
 ></script>
-<script
-  src="{{ 'volume-pricing.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'price-per-item.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
-<script
-  src="{{ 'volume-pricing-info.js' | asset_url }}"
-  type="module"
-  fetchpriority="low"
-></script>
+<script type="module">
+  const optionalProductModules = [
+    ['volume-pricing', '{{ 'volume-pricing.js' | asset_url }}'],
+    ['price-per-item', '{{ 'price-per-item.js' | asset_url }}'],
+    ['volume-pricing-info', '{{ 'volume-pricing-info.js' | asset_url }}'],
+  ];
+
+  const loadOptionalProductModules = () => {
+    optionalProductModules.forEach(([elementName, source]) => {
+      if (document.querySelector(elementName)) import(source);
+    });
+  };
+
+  const scheduleOptionalProductModules = () => {
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(loadOptionalProductModules, { timeout: 2500 });
+    } else {
+      window.addEventListener('load', loadOptionalProductModules, { once: true });
+    }
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', scheduleOptionalProductModules, { once: true });
+  } else {
+    scheduleOptionalProductModules();
+  }
+</script>
 
 {% if localization.available_countries.size > 1 or localization.available_languages.size > 1 %}
   <script
@@ -273,8 +295,16 @@
     fetchpriority="low"
   ></script>
   <script type="module">
-    import { RecentlyViewed } from '@theme/recently-viewed-products';
-    RecentlyViewed.addProduct('{{ product.id }}');
+    const registerRecentlyViewed = async () => {
+      const { RecentlyViewed } = await import('@theme/recently-viewed-products');
+      RecentlyViewed.addProduct('{{ product.id }}');
+    };
+
+    if ('requestIdleCallback' in window) {
+      window.requestIdleCallback(registerRecentlyViewed, { timeout: 3000 });
+    } else {
+      window.addEventListener('load', registerRecentlyViewed, { once: true });
+    }
   </script>
 {% endif %}
 
@@ -307,4 +337,12 @@
       name: '{{ template }}',
     },
   };
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('.zenkly-avatars img:not([alt])').forEach((avatar, index) => {
+      avatar.alt = `Customer avatar ${index + 1}`;
+    });
+  }, { once: true });
 </script>

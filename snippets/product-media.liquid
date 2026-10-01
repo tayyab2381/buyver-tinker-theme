@@ -17,7 +17,7 @@
 {%- enddoc -%}
 
 {% liquid
-  assign widths = widths | default: '240, 352, 832, 1200, 1600, 1920, 2560, 3840'
+  assign widths = widths | default: '240, 352, 480, 720, 832, 960, 1200, 1600, 1920'
   assign ref_image_to_transition = ''
   assign accessible_alt = ''
   assign alt_segments = media.alt | default: '' | split: '['
@@ -58,21 +58,23 @@
   data-media-id="{{ media.id }}"
 >
   {% liquid
-    assign high_res_url = media.preview_image | image_url: width: 3840
+    assign high_res_url = media.preview_image | image_url: width: 1920
     assign fetch_priority = 'auto'
+    assign image_loading = loading | default: 'lazy'
     if is_main_product_media
       assign fetch_priority = 'high'
+      assign image_loading = 'eager'
     endif
     assign focal_point_style = '--focal-point: ' | append: media.presentation.focal_point | append: ';'
   %}
   {{
     media.preview_image
-    | image_url: width: 3840
+    | image_url: width: 1920
     | image_tag:
       widths: widths,
       alt: accessible_alt,
       sizes: sizes,
-      loading: loading,
+      loading: image_loading,
       class: 'product-media__image',
       ref: ref_image_to_transition,
       data_max_resolution: high_res_url,

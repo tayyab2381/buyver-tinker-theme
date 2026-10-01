@@ -22,7 +22,7 @@
           {% for block in section.blocks %}
             {% if block.settings.heading != blank or block.settings.text != blank %}
               {% capture story_image %}
-                {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, fallback_image: block.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'eager' %}
+                {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, fallback_image: block.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'lazy' %}
               {% endcapture %}
               <article class="product-story-step" {{ block.shopify_attributes }}>
                 <div class="product-story-step__image">{{ story_image }}</div>
@@ -39,7 +39,7 @@
           {% assign step_texts = 'Set the cushion on a firm bed or surface before getting comfortable.|Use the raised shape beneath your upper body, hips, legs, or knees.|Make small adjustments until the position feels natural and supported.' | split: '|' %}
           {% for step_title in step_titles %}
             {% capture story_image %}
-              {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, class: 'product-story__image', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'eager' %}
+              {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, class: 'product-story__image', sizes: '(min-width: 990px) 33vw, 100vw', loading: 'lazy' %}
             {% endcapture %}
             <article class="product-story-step">
               <div class="product-story-step__image">{{ story_image }}</div>

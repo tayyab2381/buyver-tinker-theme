@@ -2,15 +2,26 @@
 
 {% liquid
   assign product = closest.product | default: block.settings.product
+  assign description_text = block.settings.text
   if request.visual_preview_mode and product == blank
     assign product = collections.all.products.first
-    assign text = product.description
+    assign description_text = product.description
+  elsif description_text == blank or description_text contains 'closest.product.description'
+    assign description_text = product.description
   endif
 
   assign target_product_handle = 'buyvur-backrest-multi-comfort-intimacy-cushion'
   assign product_video = blank
   if product != blank and product.handle == target_product_handle
     assign product_video = product.metafields.custom.product_description_video.value
+  endif
+
+  assign optimized_description = description_text
+  if product.handle == target_product_handle
+    assign optimized_description = optimized_description | replace: '<img src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/ChatGPT_Image_Sep_20_2026_11_16_33_PM_1.png?v=', '<img width="960" height="640" alt="Buyvur backrest cushion comfort support" src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/ChatGPT_Image_Sep_20_2026_11_16_33_PM_1.png?width=960&v='
+    assign optimized_description = optimized_description | replace: '<img src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/ChatGPT_Image_Sep_20_2026_11_31_58_PM.png?v=', '<img width="960" height="667" alt="Buyvur backrest cushion reclining support" src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/ChatGPT_Image_Sep_20_2026_11_31_58_PM.png?width=960&v='
+    assign optimized_description = optimized_description | replace: '<img src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/WhatsApp_Image_2026-09-20_at_23.33.09.jpg?v=', '<img width="960" height="624" alt="Buyvur backrest cushion everyday use" src="https://cdn.shopify.com/s/files/1/0701/5163/4987/files/WhatsApp_Image_2026-09-20_at_23.33.09.jpg?width=960&v='
+    assign optimized_description = optimized_description | replace: ' alt="">', '>'
   endif
 %}
 
@@ -23,22 +34,68 @@
   %}
 
   <div class="product-description-video">
-    {{
-      product_video
-      | video_tag:
-        poster: video_poster,
-        autoplay: true,
-        muted: true,
-        loop: true,
-        controls: false,
-        playsinline: true,
-        preload: 'metadata',
-        class: 'product-description-video__media'
-    }}
+    <video
+      class="product-description-video__media"
+      autoplay
+      muted
+      loop
+      playsinline
+      preload="none"
+      data-product-description-video
+      aria-label="Product demonstration video"
+      {% if video_poster != blank %}
+        poster="{{ video_poster }}"
+      {% endif %}
+    >
+      {% for source in product_video.sources %}
+        <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+      {% endfor %}
+    </video>
   </div>
+
+  <script>
+    (() => {
+      const container = document.currentScript?.previousElementSibling;
+      const video = container?.querySelector('[data-product-description-video]');
+      if (!video || video.dataset.initialized === 'true') return;
+
+      video.dataset.initialized = 'true';
+      video.muted = true;
+      video.defaultMuted = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+
+      const loadAndPlay = () => {
+        if (video.dataset.loaded === 'true') {
+          video.play()?.catch(() => {});
+          return;
+        }
+
+        video.dataset.loaded = 'true';
+        video.querySelectorAll('source[data-src]').forEach((source) => {
+          source.src = source.dataset.src;
+          source.removeAttribute('data-src');
+        });
+        video.load();
+        video.play()?.catch(() => {});
+      };
+
+      if ('IntersectionObserver' in window) {
+        const observer = new IntersectionObserver((entries) => {
+          if (entries.some((entry) => entry.isIntersecting)) {
+            observer.disconnect();
+            loadAndPlay();
+          }
+        }, { rootMargin: '400px 0px' });
+        observer.observe(container);
+      } else {
+        window.addEventListener('load', loadAndPlay, { once: true });
+      }
+    })();
+  </script>
 {% endif %}
 
-{% render 'text', fallback_text: text, block: block %}
+{% render 'text', fallback_text: description_text, text_override: optimized_description, block: block %}
 
 {% stylesheet %}
   .product-description-video {

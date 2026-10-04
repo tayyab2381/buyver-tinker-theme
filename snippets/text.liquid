@@ -3,13 +3,15 @@
 
   @param {string} [class] - custom class to define in addition to text-block classes
   @param {string} [fallback_text] - fallback text if settings.text does not exist
+  @param {string} [text_override] - optional rendered text override
   @param {object} [block] - The block object
   @param {string} [width] - width of the text block
 {%- enddoc -%}
 
 {% liquid
   assign block_settings = block.settings
-  assign plain_text = block_settings.text | strip_newlines | strip
+  assign rendered_text = text_override | default: block_settings.text
+  assign plain_text = rendered_text | strip_newlines | strip
   assign visible_text = plain_text | strip_html
   assign text_width = width | default: block_settings.width
 
@@ -96,7 +98,7 @@
   </div>
 {% elsif plain_text != blank %}
   <{{ element }} {{ attributes | strip_newlines | strip }}>
-    {{ block.settings.text }}
+    {{ rendered_text }}
   </{{ element }}>
 {% endif %}
 

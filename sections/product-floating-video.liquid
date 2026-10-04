@@ -23,13 +23,14 @@
       muted
       loop
       playsinline
-      preload="auto"
+      preload="none"
+      data-product-video-lazy
       {% if video_poster != blank %}
         poster="{{ video_poster }}"
       {% endif %}
     >
       {% for source in product_video.sources %}
-        <source src="{{ source.url }}" type="{{ source.mime_type }}">
+        <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
       {% endfor %}
     </video>
 
@@ -52,6 +53,44 @@
       const floatingVideoMedia = floatingVideo.querySelector('video');
 
       if (floatingVideoMedia) {
+        let videoLoaded = false;
+
+        const loadVideo = () => {
+          if (videoLoaded) return;
+          videoLoaded = true;
+
+          floatingVideoMedia.querySelectorAll('source[data-src]').forEach((source) => {
+            source.src = source.dataset.src;
+            source.removeAttribute('data-src');
+          });
+
+          floatingVideoMedia.load();
+        };
+
+        const startDeferredLoad = () => {
+          const load = () => {
+            loadVideo();
+            playVideo();
+          };
+
+          if ('requestIdleCallback' in window) {
+            window.requestIdleCallback(load, { timeout: 2500 });
+          } else {
+            window.setTimeout(load, 1200);
+          }
+        };
+
+        const playVideo = () => {
+          if (!videoLoaded) return;
+
+          const playRequest = floatingVideoMedia.play();
+          if (playRequest && typeof playRequest.catch === 'function') {
+            playRequest.catch(() => {
+              // Autoplay can still be deferred by a browser policy.
+            });
+          }
+        };
+
         // Keep autoplay reliable across browsers that require the muted property
         // to be set in JavaScript as well as in the HTML attribute.
         floatingVideoMedia.muted = true;
@@ -59,24 +98,18 @@
         floatingVideoMedia.setAttribute('muted', '');
         floatingVideoMedia.setAttribute('playsinline', '');
 
-        const startPlayback = () => {
-          const playRequest = floatingVideoMedia.play();
-          if (playRequest && typeof playRequest.catch === 'function') {
-            playRequest.catch(() => {
-              // Autoplay can still be deferred by a browser policy; retry when
-              // the video becomes ready or the page becomes visible again.
-            });
-          }
-        };
-
-        floatingVideoMedia.addEventListener('loadeddata', startPlayback, { once: true });
-        floatingVideoMedia.addEventListener('canplay', startPlayback, { once: true });
+        floatingVideoMedia.addEventListener('loadeddata', playVideo);
+        floatingVideoMedia.addEventListener('canplay', playVideo);
         floatingVideoMedia.addEventListener('playing', () => floatingVideo.classList.add('is-playing'), { once: true });
         document.addEventListener('visibilitychange', () => {
-          if (!document.hidden) startPlayback();
+          if (!document.hidden) playVideo();
         });
 
-        if (floatingVideoMedia.readyState >= 2) startPlayback();
+        if (document.readyState === 'complete') {
+          startDeferredLoad();
+        } else {
+          window.addEventListener('load', startDeferredLoad, { once: true });
+        }
       }
 
       floatingVideo.querySelector('[data-product-floating-video-close]')?.addEventListener('click', () => {

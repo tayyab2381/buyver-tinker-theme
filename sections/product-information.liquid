@@ -124,6 +124,7 @@
       <button
         type="button"
         class="sticky-add-to-cart__button add-to-cart-button button"
+        aria-label="{% if current_variant.available %}{{ 'products.product.add_to_cart' | t | escape }}{% elsif current_variant == blank %}{{ 'products.product.unavailable' | t | escape }}{% else %}{{ 'products.product.sold_out' | t | escape }}{% endif %}"
         ref="addToCartButton"
         on:click="/handleAddToCartClick"
         {% unless current_variant.available %}

@@ -22,7 +22,7 @@
           {% for block in section.blocks %}
             {% if block.settings.heading != blank or block.settings.text != blank %}
               {% capture story_image %}
-                {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, fallback_image: block.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'eager' %}
+                {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, fallback_image: block.settings.image, class: 'product-story__image', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'lazy' %}
               {% endcapture %}
               <article class="product-story-comfort__item{% if block.settings.image_position == 'right' %} product-story-comfort__item--reverse{% endif %}" {{ block.shopify_attributes }}>
                 <div class="product-story-comfort__media">{{ story_image }}</div>
@@ -40,7 +40,7 @@
           {% assign comfort_texts = 'The sculpted shape helps support your body while you rest, stretch, or unwind.|Place the cushion beneath your upper body for a more relaxed angle while reading, watching television, or using your phone.|Use it beneath your upper body, hips, legs, or knees whenever you want a more supported resting position.' | split: '|' %}
           {% for comfort_title in comfort_titles %}
             {% capture story_image %}
-              {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, class: 'product-story__image', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'eager' %}
+              {% render 'product-story-image', product: product, markers: '[gallery:lifestyle],[gallery:detail]', index: forloop.index0, class: 'product-story__image', sizes: '(min-width: 990px) 50vw, 100vw', loading: 'lazy' %}
             {% endcapture %}
             <article class="product-story-comfort__item{% if forloop.index0 == 1 %} product-story-comfort__item--reverse{% endif %}">
               <div class="product-story-comfort__media">{{ story_image }}</div>

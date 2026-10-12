@@ -612,13 +612,26 @@
                 else
                   assign media_sizes = sizes
                 endif
+
+                assign is_main_grid_media = false
+                if forloop.first or media_group == 'hero'
+                  assign is_main_grid_media = true
+                endif
               -%}
               {% if block_settings.aspect_ratio != 'adapt' and block_settings.constrain_to_viewport %}
                 <div class="product-media-constraint-wrapper">
-                  {%- render 'product-media', media: media, sizes: media_sizes, loading: 'lazy', is_main_product_media: false -%}
+                  {% if is_main_grid_media %}
+                    {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: true -%}
+                  {% else %}
+                    {%- render 'product-media', media: media, sizes: media_sizes, loading: 'lazy', is_main_product_media: false -%}
+                  {% endif %}
                 </div>
               {% else %}
-                {%- render 'product-media', media: media, sizes: media_sizes, loading: 'lazy', is_main_product_media: false -%}
+                {% if is_main_grid_media %}
+                  {%- render 'product-media', media: media, sizes: media_sizes, is_main_product_media: true -%}
+                {% else %}
+                  {%- render 'product-media', media: media, sizes: media_sizes, loading: 'lazy', is_main_product_media: false -%}
+                {% endif %}
               {% endif %}
             </li>
           {% endunless %}

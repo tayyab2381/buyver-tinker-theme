@@ -99,7 +99,7 @@
     assign editorial_slideshow_controls_style = 'thumbnails'
     assign editorial_slideshow_controls_class = blank
     assign editorial_controls_on_media = false
-    assign editorial_eager_thumbnails = true
+    assign editorial_eager_thumbnails = false
   endif
 
   if slideshow_controls_style == 'thumbnails'
@@ -539,7 +539,7 @@
       controls: controls
     %}
 
-    {% if media_presentation == 'grid' %}
+    {% if media_presentation == 'grid' and use_editorial_single_view == false %}
       <ul
         class="media-gallery__grid list-unstyled"
         data-testid="media-gallery-grid"

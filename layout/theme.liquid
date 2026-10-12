@@ -38,15 +38,26 @@
     {%- render 'meta-tags' -%}
 
     {% if request.page_type == 'product' and product.featured_media %}
+      {% liquid
+        assign lcp_media = product.featured_media
+        for media in product.media
+          assign media_alt_downcase = media.alt | default: '' | downcase
+          if media_alt_downcase contains '[gallery:hero]'
+            assign lcp_media = media
+            break
+          endif
+        endfor
+        assign lcp_image = lcp_media.preview_image
+      %}
       <link
         rel="preload"
         as="image"
-        href="{{ product.featured_media.preview_image | image_url: width: 800, format: 'webp' }}"
         type="image/webp"
         fetchpriority="high"
+        href="{{ lcp_image | image_url: width: 960, format: 'webp' }}"
+        imagesizes="100vw"
+        imagesrcset="{{ lcp_image | image_url: width: 480, format: 'webp' }} 480w, {{ lcp_image | image_url: width: 720, format: 'webp' }} 720w, {{ lcp_image | image_url: width: 832, format: 'webp' }} 832w, {{ lcp_image | image_url: width: 960, format: 'webp' }} 960w, {{ lcp_image | image_url: width: 1200, format: 'webp' }} 1200w"
       >
-      <link rel="preconnect" href="https://public-images.judge.me" crossorigin>
-      <link rel="preconnect" href="https://cdn.judge.me" crossorigin>
       {% style %}
         /* Defer paint work for below-fold Judge.me reviews */
         [id$="__1790519571ae8b8665"],

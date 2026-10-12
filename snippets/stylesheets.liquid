@@ -1,5 +1,11 @@
 {{ 'overflow-list.css' | asset_url | preload_tag: as: 'style' }}
 {{ 'base.css' | asset_url | stylesheet_tag: preload: true }}
 {% if request.page_type == 'product' %}
-  {{ 'product-story-sections.css' | asset_url | stylesheet_tag: preload: true }}
+  <link
+    rel="stylesheet"
+    href="{{ 'product-story-sections.css' | asset_url }}"
+    media="print"
+    onload="this.media='all'"
+  >
+  <noscript>{{ 'product-story-sections.css' | asset_url | stylesheet_tag }}</noscript>
 {% endif %}

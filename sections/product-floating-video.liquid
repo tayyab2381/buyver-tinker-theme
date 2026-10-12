@@ -7,7 +7,7 @@
   assign video_poster = blank
 
   if product_video != blank and product_video.preview_image != blank
-    assign video_poster = product_video.preview_image | image_url: width: 800
+    assign video_poster = product_video.preview_image | image_url: width: 400
   endif
 %}
 
@@ -54,6 +54,7 @@
 
       if (floatingVideoMedia) {
         let videoLoaded = false;
+        let loadArmed = false;
 
         const loadVideo = () => {
           if (videoLoaded) return;
@@ -67,19 +68,6 @@
           floatingVideoMedia.load();
         };
 
-        const startDeferredLoad = () => {
-          const load = () => {
-            loadVideo();
-            playVideo();
-          };
-
-          if ('requestIdleCallback' in window) {
-            window.requestIdleCallback(load, { timeout: 2500 });
-          } else {
-            window.setTimeout(load, 1200);
-          }
-        };
-
         const playVideo = () => {
           if (!videoLoaded) return;
 
@@ -89,6 +77,41 @@
               // Autoplay can still be deferred by a browser policy.
             });
           }
+        };
+
+        const startNetworkLoad = () => {
+          if (videoLoaded) return;
+          loadVideo();
+          playVideo();
+        };
+
+        const armDeferredLoad = () => {
+          if (loadArmed) return;
+          loadArmed = true;
+
+          let deferredTimer = 0;
+
+          const cleanupGestureListeners = () => {
+            document.removeEventListener('pointerdown', onGesture);
+            document.removeEventListener('touchstart', onGesture);
+            document.removeEventListener('scroll', onGesture);
+          };
+
+          const onGesture = () => {
+            window.clearTimeout(deferredTimer);
+            cleanupGestureListeners();
+            startNetworkLoad();
+          };
+
+          document.addEventListener('pointerdown', onGesture, { once: true, passive: true });
+          document.addEventListener('touchstart', onGesture, { once: true, passive: true });
+          document.addEventListener('scroll', onGesture, { once: true, passive: true });
+
+          // After load, wait 5s so cold Meta landings finish LCP before video bytes.
+          deferredTimer = window.setTimeout(() => {
+            cleanupGestureListeners();
+            startNetworkLoad();
+          }, 5000);
         };
 
         // Keep autoplay reliable across browsers that require the muted property
@@ -106,9 +129,9 @@
         });
 
         if (document.readyState === 'complete') {
-          startDeferredLoad();
+          armDeferredLoad();
         } else {
-          window.addEventListener('load', startDeferredLoad, { once: true });
+          window.addEventListener('load', armDeferredLoad, { once: true });
         }
       }
 

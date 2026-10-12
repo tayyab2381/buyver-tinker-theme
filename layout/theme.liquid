@@ -41,7 +41,8 @@
       <link
         rel="preload"
         as="image"
-        href="{{ product.featured_media.preview_image | image_url: width: 800 }}"
+        href="{{ product.featured_media.preview_image | image_url: width: 800, format: 'webp' }}"
+        type="image/webp"
         fetchpriority="high"
       >
       <link rel="preconnect" href="https://public-images.judge.me" crossorigin>

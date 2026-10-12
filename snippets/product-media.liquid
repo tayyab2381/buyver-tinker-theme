@@ -64,7 +64,7 @@
       assign media_max_width = 1200
       assign media_widths = '240, 352, 480, 720, 832, 960, 1200'
     endif
-    assign high_res_url = media.preview_image | image_url: width: media_max_width
+    assign high_res_url = media.preview_image | image_url: width: media_max_width, format: 'webp'
     assign fetch_priority = 'auto'
     assign image_loading = loading | default: 'lazy'
     if is_main_product_media
@@ -75,7 +75,7 @@
   %}
   {{
     media.preview_image
-    | image_url: width: media_max_width
+    | image_url: width: media_max_width, format: 'webp'
     | image_tag:
       widths: media_widths,
       alt: accessible_alt,

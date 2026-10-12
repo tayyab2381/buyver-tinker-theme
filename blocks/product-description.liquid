@@ -41,7 +41,7 @@
   {% liquid
     assign video_poster = blank
     if product_video.preview_image != blank
-      assign video_poster = product_video.preview_image | image_url: width: 720
+      assign video_poster = product_video.preview_image | image_url: width: 720, format: 'webp'
     endif
   %}
 

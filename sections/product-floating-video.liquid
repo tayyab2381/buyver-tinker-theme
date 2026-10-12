@@ -7,7 +7,7 @@
   assign video_poster = blank
 
   if product_video != blank and product_video.preview_image != blank
-    assign video_poster = product_video.preview_image | image_url: width: 400
+    assign video_poster = product_video.preview_image | image_url: width: 400, format: 'webp'
   endif
 %}
 

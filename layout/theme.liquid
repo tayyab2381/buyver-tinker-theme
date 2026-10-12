@@ -36,6 +36,27 @@
     {% endif %}
 
     {%- render 'meta-tags' -%}
+
+    {% if request.page_type == 'product' and product.featured_media %}
+      <link
+        rel="preload"
+        as="image"
+        href="{{ product.featured_media.preview_image | image_url: width: 800 }}"
+        fetchpriority="high"
+      >
+      <link rel="preconnect" href="https://public-images.judge.me" crossorigin>
+      <link rel="preconnect" href="https://cdn.judge.me" crossorigin>
+      {% style %}
+        /* Defer paint work for below-fold Judge.me reviews */
+        [id$="__1790519571ae8b8665"],
+        .jdgm-rev-widg,
+        #judgeme_product_reviews {
+          content-visibility: auto;
+          contain-intrinsic-size: 800px;
+        }
+      {% endstyle %}
+    {% endif %}
+
     {%- render 'stylesheets' -%}
     {%- render 'fonts' -%}
     {%- render 'scripts' -%}

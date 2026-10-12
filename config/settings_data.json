@@ -69,6 +69,8 @@
     "palette_selected_variant_border": "{{ settings.color_palette.foreground }}",
     "variant_button_radius": 100,
     "variant_button_width": "default-width-buttons",
+    "page_transition_enabled": false,
+    "transition_to_main_product": false,
     "content_for_index": [],
     "blocks": {
       "14060646107696862457": {

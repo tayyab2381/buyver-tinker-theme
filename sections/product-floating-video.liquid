@@ -107,11 +107,11 @@
           document.addEventListener('touchstart', onGesture, { once: true, passive: true });
           document.addEventListener('scroll', onGesture, { once: true, passive: true });
 
-          // After load, wait 5s so cold Meta landings finish LCP before video bytes.
+          // After load, wait 20s so cold Meta landings finish LCP before video bytes.
           deferredTimer = window.setTimeout(() => {
             cleanupGestureListeners();
             startNetworkLoad();
-          }, 12000);
+          }, 20000);
         };
 
         // Keep autoplay reliable across browsers that require the muted property

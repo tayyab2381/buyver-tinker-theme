@@ -23,14 +23,13 @@
       muted
       loop
       playsinline
-      preload="none"
-      data-product-video-lazy
+      preload="metadata"
       {% if video_poster != blank %}
         poster="{{ video_poster }}"
       {% endif %}
     >
       {% for source in product_video.sources %}
-        <source data-src="{{ source.url }}" type="{{ source.mime_type }}">
+        <source src="{{ source.url }}" type="{{ source.mime_type }}">
       {% endfor %}
     </video>
 
@@ -53,65 +52,13 @@
       const floatingVideoMedia = floatingVideo.querySelector('video');
 
       if (floatingVideoMedia) {
-        let videoLoaded = false;
-        let loadArmed = false;
-
-        const loadVideo = () => {
-          if (videoLoaded) return;
-          videoLoaded = true;
-
-          floatingVideoMedia.querySelectorAll('source[data-src]').forEach((source) => {
-            source.src = source.dataset.src;
-            source.removeAttribute('data-src');
-          });
-
-          floatingVideoMedia.load();
-        };
-
         const playVideo = () => {
-          if (!videoLoaded) return;
-
           const playRequest = floatingVideoMedia.play();
           if (playRequest && typeof playRequest.catch === 'function') {
             playRequest.catch(() => {
               // Autoplay can still be deferred by a browser policy.
             });
           }
-        };
-
-        const startNetworkLoad = () => {
-          if (videoLoaded) return;
-          loadVideo();
-          playVideo();
-        };
-
-        const armDeferredLoad = () => {
-          if (loadArmed) return;
-          loadArmed = true;
-
-          let deferredTimer = 0;
-
-          const cleanupGestureListeners = () => {
-            document.removeEventListener('pointerdown', onGesture);
-            document.removeEventListener('touchstart', onGesture);
-            document.removeEventListener('scroll', onGesture);
-          };
-
-          const onGesture = () => {
-            window.clearTimeout(deferredTimer);
-            cleanupGestureListeners();
-            startNetworkLoad();
-          };
-
-          document.addEventListener('pointerdown', onGesture, { once: true, passive: true });
-          document.addEventListener('touchstart', onGesture, { once: true, passive: true });
-          document.addEventListener('scroll', onGesture, { once: true, passive: true });
-
-          // After load, wait 20s so cold Meta landings finish LCP before video bytes.
-          deferredTimer = window.setTimeout(() => {
-            cleanupGestureListeners();
-            startNetworkLoad();
-          }, 20000);
         };
 
         // Keep autoplay reliable across browsers that require the muted property
@@ -128,11 +75,7 @@
           if (!document.hidden) playVideo();
         });
 
-        if (document.readyState === 'complete') {
-          armDeferredLoad();
-        } else {
-          window.addEventListener('load', armDeferredLoad, { once: true });
-        }
+        playVideo();
       }
 
       floatingVideo.querySelector('[data-product-floating-video-close]')?.addEventListener('click', () => {
